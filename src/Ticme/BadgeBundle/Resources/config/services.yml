@@ -1,0 +1,5 @@
+services:
+    badge.manager:
+        class: Ticme\BadgeBundle\Manager\BadgeManager
+        arguments: ['@doctrine.orm.entity_manager', '@event_dispatcher']
+

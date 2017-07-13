@@ -1,0 +1,44 @@
+# To get started with security, check out the documentation:
+# https://symfony.com/doc/current/security.html
+security:
+    # Encoder pour chiffrer les mots de passe
+    encoders:
+        AppBundle\Entity\User:
+            algorithm: bcrypt
+
+    # https://symfony.com/doc/current/security.html#b-configuring-how-users-are-loaded
+    #
+    providers:
+        default:
+            entity:
+                class: AppBundle:User
+                property: email
+
+    firewalls:
+        # disables authentication for assets and the profiler, adapt it according to your needs
+        dev:
+            pattern: ^/(_(profiler|wdt)|css|images|js)/
+            security: false
+
+        main:
+            pattern:   ^/
+            provider: default
+            anonymous: ~
+            form_login:
+                login_path: /login
+                check_path: /login
+                target_path_parameter: login_success
+                failure_path_parameter: login_fail
+                always_use_default_target_path: true
+                default_target_path: /create
+
+                # csrf token options
+                csrf_parameter:       _csrf_token
+                csrf_token_id:        authenticate
+                csrf_token_generator: security.csrf.token_manager
+
+
+    access_control:
+        - { path: ^/login$, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/, roles: ROLE_USER }
